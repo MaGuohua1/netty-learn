@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script type="text/javascript">
+	var socket;
+	if(window.WebSocket) {
+		socket = new WebSocket("ws://localhost:9999/hello");
+		socket.onmessage= function (ev) {
+			var rt = document.getElementById("get");
+			rt.value = rt.value+"\n"+ev.data;
+		}
+		socket.onopen = function (ev) {
+			var rt = document.getElementById("get");
+			rt.value = "已连接";
+		}
+		socket.onclose = function (ev) {
+			var rt = document.getElementById("get");
+			rt.value = "已断开";
+		}
+	}
+	function sendMsg(massage) {
+		if (!window.socket) {
+			return;
+		}
+		if (socket.readyState == WebSocket.OPEN) {
+			socket.send(massage);
+		} else {
+			alert("server is not start")
+		}
+	}
+</script>
+<body>
+	<form onsubmit="return false">
+		<textarea id="send" name="send" style="height: 300px; width: 300px;"></textarea>
+		<input type="button" value="send" onclick="sendMsg(this.form.send.value)">
+		<textarea id="get" name="get" style="height: 300px; width: 300px;"></textarea>
+		<input type="button" value="clear" onclick="document.getElementById('get').value=''">
+	</form>
+</body>
+</html>
